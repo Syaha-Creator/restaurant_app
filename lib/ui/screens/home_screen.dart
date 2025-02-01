@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:resto_app/core/api_service.dart';
-import 'package:resto_app/core/themes/typography.dart';
 import 'package:resto_app/models/restaurant.dart';
+import 'package:resto_app/ui/widgets/loading_indicator.dart';
+import 'package:resto_app/ui/widgets/restaurant_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: LoadingIndicator(),
             );
           } else if (snapshot.hasError) {
             return Center(
@@ -45,41 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   final restaurant = snapshot.data![index];
-                  return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      child: ListTile(
-                        leading: Image.network(
-                          'https://restaurant-api.dicoding.dev/images/small/${restaurant.pictureId}',
-                          width: 100,
-                          fit: BoxFit.cover,
-                        ),
-                        title: Text(restaurant.name,
-                            style: AppTypography.headlineSmall),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              restaurant.city,
-                              style: AppTypography.bodyMedium,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                  size: 16.0,
-                                ),
-                                Text(
-                                  restaurant.rating.toString(),
-                                  style: AppTypography.bodyMedium,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        onTap: () {},
-                      ));
+                  return RestaurantCard(restaurant: restaurant, onTap: () {});
                 });
           }
         },
